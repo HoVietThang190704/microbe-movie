@@ -1,12 +1,17 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2023",
     "lib": ["ES2023"],
-    "declaration": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
     "rootDir": "./src",
+    "baseUrl": "../../",
+    "paths": {
+      "@libs": ["libs/dist"],
+      "@libs/*": ["libs/dist/*"]
+    },
+    "declaration": true,
     "removeComments": true,
     "strict": true,
     "skipLibCheck": true,
@@ -17,7 +22,8 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo"
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "sourceMap": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

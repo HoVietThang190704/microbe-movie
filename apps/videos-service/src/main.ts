@@ -1,7 +1,8 @@
+import 'tsconfig-paths/register';
 import { NestFactory } from '@nestjs/core';
 import { VideosModule } from './videos.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { VIDEOS_ENV, DEFAULT_PORTS, DEFAULT_HOSTS } from './constants';
+import { VIDEOS_ENV, DEFAULT_PORTS, DEFAULT_HOSTS } from '@libs/constants';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(

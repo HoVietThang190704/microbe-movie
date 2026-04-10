@@ -1,7 +1,0 @@
-{
-  "name": "@microbe-video/constants",
-  "version": "0.0.1",
-  "description": "Shared constants for microbe-video services",
-  "main": "index.ts",
-  "types": "index.ts"
-}

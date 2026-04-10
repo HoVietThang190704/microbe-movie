@@ -7,7 +7,7 @@ import {
   VIDEOS_ENV,
   DEFAULT_PORTS,
   DEFAULT_HOSTS,
-} from './constants';
+} from '@libs/constants';
 
 @Module({
   imports: [

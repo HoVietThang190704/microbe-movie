@@ -10,7 +10,7 @@
       "entryFile": "main",
       "sourceRoot": "apps/api-gateway/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+        "tsConfigPath": "apps/api-gateway/tsconfig.json"
       }
     },
     "videos-service": {
@@ -19,7 +19,15 @@
       "entryFile": "main",
       "sourceRoot": "apps/videos-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/videos-service/tsconfig.app.json"
+        "tsConfigPath": "apps/videos-service/tsconfig.json"
+      }
+    },
+    "types": {
+      "type": "library",
+      "root": "libs",
+      "sourceRoot": "libs/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/tsconfig.lib.json"
       }
     }
   }

@@ -6,22 +6,29 @@
   "private": true,
   "license": "UNLICENSED",
   "workspaces": [
+    "libs/types",
     "apps/api-gateway",
     "apps/videos-service"
   ],
   "scripts": {
-    "build": "bun run --filter './apps/*' build",
+    "build": "bun run build:libs && bun run build:apps",
+    "build:libs": "bun run --filter './libs/*' build",
+    "build:apps": "bun run --filter './apps/*' build",
     "start:gateway": "bun --filter api-gateway start:dev",
     "start:videos": "bun --filter videos-service start:dev",
     "start:gateway:prod": "bun --filter api-gateway start:prod",
     "start:videos:prod": "bun --filter videos-service start:prod",
-    "format": "bun run --filter './apps/*' format",
-    "lint": "bun run --filter './apps/*' lint",
-    "test": "bun run --filter './apps/*' test"
+    "format": "bun run --filter './**' format",
+    "lint": "bun run --filter './**' lint",
+    "test": "bun run --filter './**' test"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1"
   }
 }
