@@ -6,15 +6,15 @@
   "private": true,
   "license": "UNLICENSED",
   "workspaces": [
-    "libs/types",
+    "libs",
     "apps/api-gateway",
     "apps/videos-service"
   ],
   "scripts": {
     "build": "bun run build:libs && bun run build:apps",
-    "build:libs": "bun run --filter './libs/*' build",
+    "build:libs": "bun run --filter './libs' build",
     "build:apps": "bun run --filter './apps/*' build",
-    "start:gateway": "bun --filter api-gateway start:dev",
+    "start:gateway": "bun run --filter api-gateway start:dev",
     "start:videos": "bun --filter videos-service start:dev",
     "start:gateway:prod": "bun --filter api-gateway start:prod",
     "start:videos:prod": "bun --filter videos-service start:prod",
