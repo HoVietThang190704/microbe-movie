@@ -2,7 +2,25 @@
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "compilerOptions": {
-    "deleteOutDir": true
+  "monorepo": true,
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "videos-service": {
+      "type": "application",
+      "root": "apps/videos-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/videos-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/videos-service/tsconfig.app.json"
+      }
+    }
   }
 }
