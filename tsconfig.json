@@ -8,7 +8,8 @@
     "baseUrl": "./",
     "paths": {
       "@libs": ["libs/dist"],
-      "@libs/*": ["libs/dist/*"]
+      "@libs/*": ["libs/dist/*"],
+      "@microbe-video/types": ["libs/dist"]
     },
     "incremental": true,
     "skipLibCheck": true,

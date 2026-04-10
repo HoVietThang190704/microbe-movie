@@ -1,11 +1,3 @@
-export interface VideoUploadRequest {
-  filename: string;
-  originalName: string;
-  path: string;
-  size: number;
-  mimetype: string;
-}
-
 export interface VideoUploadData {
   id: string;
   filename: string;

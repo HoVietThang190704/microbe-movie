@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import type { VideoUploadRequest } from '@libs/types';
 import { VIDEOS_MESSAGES } from '@libs/constants/videos';
+import { CreateVideoDto } from '@libs';
 
 @Controller()
 export class VideosController {
@@ -22,7 +22,7 @@ export class VideosController {
   }
 
   @MessagePattern(VIDEOS_MESSAGES.UPLOAD_VIDEO)
-  uploadVideo(payload: VideoUploadRequest) {
+  uploadVideo(payload: CreateVideoDto) {
     return {
       id: '2',
       filename: payload.filename,

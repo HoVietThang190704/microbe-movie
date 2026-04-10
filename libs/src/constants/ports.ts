@@ -1,4 +1,5 @@
 export const DEFAULT_PORTS = {
   API_GATEWAY: 8080,
   VIDEOS_SERVICE: 8081,
+  AUTH_SERVICE: 8082,
 } as const;
