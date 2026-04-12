@@ -1,3 +1,8 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({ path: path.join(process.cwd(), '.env') });
+
 import 'tsconfig-paths/register';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth.module';
