@@ -4,11 +4,11 @@ import { ResponseInterceptor } from '../intercepter/ResponseIntercepter';
 import type { GetVideosData } from '@libs/types';
 
 @Controller('/api/videos')
+@UseInterceptors(ResponseInterceptor)
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Get()
-  @UseInterceptors(ResponseInterceptor)
   async getVideos(): Promise<GetVideosData> {
     return await this.videosService.getVideos();
   }

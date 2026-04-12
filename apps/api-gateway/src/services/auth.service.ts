@@ -1,4 +1,9 @@
-import { AUTH_MESSAGES, AUTH_SERVICE_TOKEN, RegisterDto, LoginDto } from '@libs';
+import {
+  AUTH_MESSAGES,
+  AUTH_SERVICE_TOKEN,
+  RegisterDto,
+  LoginDto,
+} from '@libs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';

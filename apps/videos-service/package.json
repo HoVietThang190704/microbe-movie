@@ -16,17 +16,26 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "bun run typeorm -d src/database/config/ormconfig.ts migration:generate",
+    "migration:create": "bun run typeorm -d src/database/config/ormconfig.ts migration:create",
+    "migration:run": "bun run typeorm -d src/database/config/ormconfig.ts migration:run",
+    "migration:revert": "bun run typeorm -d src/database/config/ormconfig.ts migration:revert",
+    "migration:show": "bun run typeorm -d src/database/config/ormconfig.ts migration:show"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/microservices": "^11.1.18",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/typeorm": "^11.0.0",
     "ioredis": "^5.10.1",
+    "pg": "^8.11.3",
     "redis": "^5.11.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
