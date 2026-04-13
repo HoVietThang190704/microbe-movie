@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { AUTH_REPOSITORY_TOKEN } from './libs/shared/constant/auth';
 import { AuthRepository } from './auth.repository';
-import { RegisterDto } from '@libs';
+import { LoginDto, RegisterDto } from '@libs';
 
 @Injectable()
 export class AuthService {
@@ -29,5 +29,18 @@ export class AuthService {
       throw new Error('Failed to create user');
     }
     return true;
+  }
+
+  async login(loginPayload: LoginDto): Promise<{ token: string }> {
+    const { email, password } = loginPayload;
+    const user = await this.authRepository.findEmail(email);
+    if (!user) {
+      throw new Error('Invalid email or password');
+    }
+    const isPasswordValid = await bcryptjs.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new Error('Invalid email or password');
+    }
+    return { token: 'your-jwt-token' };
   }
 }
