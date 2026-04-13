@@ -3,12 +3,14 @@ import * as bcryptjs from 'bcryptjs';
 import { AUTH_REPOSITORY_TOKEN } from './libs/shared/constant/auth';
 import { AuthRepository } from './auth.repository';
 import { LoginDto, RegisterDto } from '@libs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(AUTH_REPOSITORY_TOKEN)
     private readonly authRepository: AuthRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
   async register(registerPayload: RegisterDto): Promise<boolean> {
@@ -31,7 +33,7 @@ export class AuthService {
     return true;
   }
 
-  async login(loginPayload: LoginDto): Promise<{ token: string }> {
+  async login(loginPayload: LoginDto): Promise<{ accessToken: string }> {
     const { email, password } = loginPayload;
     const user = await this.authRepository.findEmail(email);
     if (!user) {
@@ -41,6 +43,10 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new Error('Invalid email or password');
     }
-    return { token: 'your-jwt-token' };
+    const accessToken = this.jwtService.sign({
+      userId: user.id,
+      email: user.email,
+    });
+    return { accessToken };
   }
 }
