@@ -15,8 +15,6 @@ export class AuthController {
   }
   @MessagePattern(AUTH_MESSAGES.LOGIN)
   login(payload: LoginDto) {
-    return {
-      accessToken: `fake-jwt-token-for-${payload.email}`,
-    };
+    return this.authService.login(payload);
   }
 }
