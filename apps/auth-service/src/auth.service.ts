@@ -2,14 +2,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { AUTH_REPOSITORY_TOKEN } from './libs/shared/constant/auth';
 import { AuthRepository } from './auth.repository';
+import { UserService } from './user.service';
 import { LoginDto, RegisterDto } from '@libs';
 import { JwtService } from '@nestjs/jwt';
+import { USER_SERVICE_TOKEN } from './libs/shared/constant/user';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(AUTH_REPOSITORY_TOKEN)
     private readonly authRepository: AuthRepository,
+    @Inject(USER_SERVICE_TOKEN)
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -22,14 +26,15 @@ export class AuthService {
 
     const passwordHash = await bcryptjs.hash(password, 10);
 
-    const newUser = await this.authRepository.createUser(
-      email,
-      passwordHash,
-      username,
-    );
-    if (!newUser) {
-      throw new Error('Failed to create user');
-    }
+    // const newUser = await this.authRepository.createUser(
+    //   email,
+    //   passwordHash,
+    //   username,
+    // );
+    // if (!newUser) {
+    //   throw new Error('Failed to create user');
+    // }
+    await this.userService.createUser(email, passwordHash, username);
     return true;
   }
 

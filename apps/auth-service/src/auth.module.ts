@@ -9,11 +9,17 @@ import {
   AUTH_REPOSITORY_TOKEN,
   AUTH_SERVICE_TOKEN,
 } from './libs/shared/constant/auth';
+import {
+  USER_REPOSITORY_TOKEN,
+  USER_SERVICE_TOKEN,
+} from './libs/shared/constant/user';
 import { DatabaseModule } from './database/database.module';
 import { databaseConfig } from './database/config/database.config';
 import { jwtConfig } from './config/jwt.config';
 import configuration from './config/configuration';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { UserService } from './user.service';
+import { UserRepository } from './user.repository';
 
 @Module({
   imports: [
@@ -44,6 +50,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     {
       provide: AUTH_REPOSITORY_TOKEN,
       useClass: AuthRepository,
+    },
+    {
+      provide: USER_REPOSITORY_TOKEN,
+      useClass: UserRepository,
+    },
+    {
+      provide: USER_SERVICE_TOKEN,
+      useClass: UserService,
     },
   ],
 })

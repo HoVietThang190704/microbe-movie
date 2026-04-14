@@ -13,13 +13,13 @@ export class AuthRepository extends Repository<UserEntity> {
   async findEmail(email: string): Promise<UserEntity | null> {
     return await this.repo.findOne({ where: { email } });
   }
-  async createUser(
-    email: string,
-    passwordHash: string,
-    username: string,
-  ): Promise<UserEntity> {
-    return await this.repo.save(
-      this.repo.create({ email, passwordHash, username }),
-    );
-  }
+  // async createUser(
+  //   email: string,
+  //   passwordHash: string,
+  //   username: string,
+  // ): Promise<UserEntity> {
+  //   return await this.repo.save(
+  //     this.repo.create({ email, passwordHash, username }),
+  //   );
+  // }
 }
