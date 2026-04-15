@@ -9,7 +9,8 @@
     "libs",
     "apps/api-gateway",
     "apps/videos-service",
-    "apps/auth-service"
+    "apps/auth-service",
+    "apps/user-service"
   ],
   "scripts": {
     "build": "bun run build:libs && bun run build:apps",
@@ -18,9 +19,11 @@
     "start:gateway": "bun run --filter api-gateway start:dev",
     "start:videos": "bun --filter videos-service start:dev",
     "start:auth": "bun --filter auth-service start:dev",
+    "start:user": "bun --filter user-service start:dev",
     "start:gateway:prod": "bun --filter api-gateway start:prod",
     "start:videos:prod": "bun --filter videos-service start:prod",
     "start:auth:prod": "bun run --filter auth-service start:prod",
+    "start:user:prod": "bun run --filter user-service start:prod",
     "format": "bun run --filter './**' format",
     "lint": "bun run --filter './**' lint",
     "test": "bun run --filter './**' test"

@@ -4,7 +4,7 @@ import { UserEntity } from './database/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class AuthRepository extends Repository<UserEntity> {
+export class UserRepository extends Repository<UserEntity> {
   constructor(
     @InjectRepository(UserEntity) private readonly repo: Repository<UserEntity>,
   ) {
@@ -12,6 +12,9 @@ export class AuthRepository extends Repository<UserEntity> {
   }
   async findEmail(email: string): Promise<UserEntity | null> {
     return await this.repo.findOne({ where: { email } });
+  }
+  async findId(id: string): Promise<UserEntity | null> {
+    return await this.repo.findOne({ where: { id } });
   }
   async createUser(
     email: string,
@@ -21,5 +24,16 @@ export class AuthRepository extends Repository<UserEntity> {
     return await this.repo.save(
       this.repo.create({ email, passwordHash, username }),
     );
+  }
+  async getUserById(id: string): Promise<UserEntity | null> {
+    return await this.repo.findOne({ where: { id } });
+  }
+  async updateUser(id: string, updateData: Partial<UserEntity>): Promise<UserEntity | null> {
+    await this.repo.update(id, updateData);
+    return await this.repo.findOne({ where: { id } });
+  }
+  async deleteUser(id: string): Promise<boolean> {
+    const result = await this.repo.delete(id);
+    return result.affected! > 0;
   }
 }

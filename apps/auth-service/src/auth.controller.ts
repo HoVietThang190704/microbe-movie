@@ -9,12 +9,12 @@ export class AuthController {
   constructor(
     @Inject(AUTH_SERVICE_TOKEN) private readonly authService: AuthService,
   ) {}
-  @MessagePattern(AUTH_MESSAGES.REGISTER)
-  register(payload: RegisterDto) {
-    return this.authService.register(payload);
-  }
   @MessagePattern(AUTH_MESSAGES.LOGIN)
   login(payload: LoginDto) {
     return this.authService.login(payload);
+  }
+  @MessagePattern(AUTH_MESSAGES.VALIDATE_TOKEN)
+  validateToken(payload: { token: string }) {
+    return this.authService.verifyToken(payload.token);
   }
 }

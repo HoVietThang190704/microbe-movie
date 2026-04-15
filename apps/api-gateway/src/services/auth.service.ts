@@ -1,6 +1,8 @@
 import {
   AUTH_MESSAGES,
   AUTH_SERVICE_TOKEN,
+  USER_MESSAGES,
+  USER_SERVICE_TOKEN,
   RegisterDto,
   LoginDto,
 } from '@libs';
@@ -12,24 +14,28 @@ import { firstValueFrom } from 'rxjs';
 export class AuthService {
   constructor(
     @Inject(AUTH_SERVICE_TOKEN) private readonly authClient: ClientProxy,
+    @Inject(USER_SERVICE_TOKEN) private readonly userClient: ClientProxy,
   ) {}
 
   private async send<TRequest, TResponse>(
     pattern: string,
     payload: TRequest,
+    client: ClientProxy,
   ): Promise<TResponse> {
-    return await firstValueFrom(this.authClient.send(pattern, payload));
+    return await firstValueFrom(client.send(pattern, payload));
   }
   async register(registerPayload: RegisterDto): Promise<object> {
     return this.send<RegisterDto, object>(
-      AUTH_MESSAGES.REGISTER,
+      USER_MESSAGES.REGISTER,
       registerPayload,
+      this.userClient,
     );
   }
   async login(loginPayload: LoginDto): Promise<{ accessToken: string }> {
     return this.send<LoginDto, { accessToken: string }>(
       AUTH_MESSAGES.LOGIN,
       loginPayload,
+      this.authClient,
     );
   }
 }

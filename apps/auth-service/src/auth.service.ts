@@ -1,52 +1,47 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
-import { AUTH_REPOSITORY_TOKEN } from './libs/shared/constant/auth';
-import { AuthRepository } from './auth.repository';
-import { LoginDto, RegisterDto } from '@libs';
+import { LoginDto } from '@libs';
 import { JwtService } from '@nestjs/jwt';
+
+import { USER_SERVICE_TOKEN, USER_MESSAGES } from '@libs/constants';
+import { ClientProxy } from '@nestjs/microservices/client/client-proxy';
+import { first, firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(AUTH_REPOSITORY_TOKEN)
-    private readonly authRepository: AuthRepository,
+    @Inject(USER_SERVICE_TOKEN) private readonly userClient: ClientProxy,
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerPayload: RegisterDto): Promise<boolean> {
-    const { email, password, username } = registerPayload;
-    const existingUser = await this.authRepository.findEmail(email);
-    if (existingUser) {
-      throw new Error('Email already exists');
-    }
-
-    const passwordHash = await bcryptjs.hash(password, 10);
-
-    const newUser = await this.authRepository.createUser(
-      email,
-      passwordHash,
-      username,
-    );
-    if (!newUser) {
-      throw new Error('Failed to create user');
-    }
-    return true;
-  }
-
   async login(loginPayload: LoginDto): Promise<{ accessToken: string }> {
     const { email, password } = loginPayload;
-    const user = await this.authRepository.findEmail(email);
-    if (!user) {
+    try {
+      const user = await firstValueFrom(
+        this.userClient.send(USER_MESSAGES.FIND_EMAIL, { email }).pipe(first())
+      );
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+      const isPasswordValid = await bcryptjs.compare(password, user.passwordHash);
+      if (!isPasswordValid) {
+        throw new Error('Invalid email or password');
+      }
+      const accessToken = this.jwtService.sign({
+        userId: user.id,
+        email: user.email,
+      });
+      return { accessToken };
+    } catch (error) {
       throw new Error('Invalid email or password');
     }
-    const isPasswordValid = await bcryptjs.compare(password, user.passwordHash);
-    if (!isPasswordValid) {
-      throw new Error('Invalid email or password');
+  }
+  async verifyToken(token: string): Promise<{ userId: string; email: string } | null> {
+    try {
+      const decoded = this.jwtService.verify(token);
+      return { userId: decoded.userId, email: decoded.email };
+    } catch (error) {
+      return null;
     }
-    const accessToken = this.jwtService.sign({
-      userId: user.id,
-      email: user.email,
-    });
-    return { accessToken };
   }
 }
