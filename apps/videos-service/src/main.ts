@@ -1,24 +1,33 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({ path: path.join(process.cwd(), '.env') });
+
 import 'tsconfig-paths/register';
 import { NestFactory } from '@nestjs/core';
 import { VideosModule } from './videos.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { VIDEOS_ENV, DEFAULT_PORTS, DEFAULT_HOSTS } from '@libs/constants';
+import {
+  RABBITMQ_QUEUES,
+  RABBITMQ_OPTIONS,
+  RABBITMQ_URL_DEFAULT,
+} from '@libs/constants';
 
 async function bootstrap() {
+  const rabbitmqUrl = process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT;
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     VideosModule,
     {
-      transport: Transport.TCP,
+      transport: Transport.RMQ,
       options: {
-        host: process.env[VIDEOS_ENV.HOST] ?? DEFAULT_HOSTS.LOCALHOST,
-        port: parseInt(
-          process.env[VIDEOS_ENV.PORT] ??
-            DEFAULT_PORTS.VIDEOS_SERVICE.toString(),
-          10,
-        ),
+        urls: [rabbitmqUrl],
+        queue: RABBITMQ_QUEUES.VIDEOS,
+        queueOptions: RABBITMQ_OPTIONS,
       },
     },
   );
   await app.listen();
+  console.log(`Videos Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.VIDEOS}`);
 }
 bootstrap();

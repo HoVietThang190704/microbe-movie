@@ -1,8 +1,8 @@
-import { Controller, Inject } from "@nestjs/common";
+import { Controller, Inject } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { USER_MESSAGES, RegisterDto } from "@libs";
-import { UserService } from "./user.service";
-import { USER_SERVICE_TOKEN } from "./libs/shared/constant/user";
+import { USER_MESSAGES, RegisterDto } from '@libs';
+import { UserService } from './user.service';
+import { USER_SERVICE_TOKEN } from './libs/shared/constant/user';
 
 @Controller()
 export class UserController {
@@ -22,7 +22,10 @@ export class UserController {
     return this.userService.findEmail(payload.email);
   }
   @MessagePattern(USER_MESSAGES.UPDATE_USER)
-  updateUser(payload: { id: string; updateData: Partial<{ email: string; username: string }> }) {
+  updateUser(payload: {
+    id: string;
+    updateData: Partial<{ email: string; username: string }>;
+  }) {
     return this.userService.updateUser(payload.id, payload.updateData);
   }
   @MessagePattern(USER_MESSAGES.DELETE_USER)

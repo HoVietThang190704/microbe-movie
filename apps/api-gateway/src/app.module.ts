@@ -7,13 +7,11 @@ import { VideosController } from './controllers/videos.controller';
 import { VideosService } from './services/videos.service';
 import {
   VIDEOS_SERVICE_TOKEN,
-  VIDEOS_ENV,
-  DEFAULT_PORTS,
-  DEFAULT_HOSTS,
   AUTH_SERVICE_TOKEN,
-  AUTH_ENV,
   USER_SERVICE_TOKEN,
-  USER_ENV,
+  RABBITMQ_QUEUES,
+  RABBITMQ_OPTIONS,
+  RABBITMQ_URL_DEFAULT,
 } from '@libs/constants';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
@@ -37,36 +35,29 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
     ClientsModule.register([
       {
         name: VIDEOS_SERVICE_TOKEN,
-        transport: Transport.TCP,
+        transport: Transport.RMQ,
         options: {
-          host: process.env[VIDEOS_ENV.HOST] ?? DEFAULT_HOSTS.LOCALHOST,
-          port: parseInt(
-            process.env[VIDEOS_ENV.PORT] ??
-              DEFAULT_PORTS.VIDEOS_SERVICE.toString(),
-            10,
-          ),
+          urls: [process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT],
+          queue: RABBITMQ_QUEUES.VIDEOS,
+          queueOptions: RABBITMQ_OPTIONS,
         },
       },
       {
         name: AUTH_SERVICE_TOKEN,
-        transport: Transport.TCP,
+        transport: Transport.RMQ,
         options: {
-          host: process.env[AUTH_ENV.HOST] ?? DEFAULT_HOSTS.LOCALHOST,
-          port: parseInt(
-            process.env[AUTH_ENV.PORT] ?? DEFAULT_PORTS.AUTH_SERVICE.toString(),
-            10,
-          ),
+          urls: [process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT],
+          queue: RABBITMQ_QUEUES.AUTH,
+          queueOptions: RABBITMQ_OPTIONS,
         },
       },
       {
         name: USER_SERVICE_TOKEN,
-        transport: Transport.TCP,
+        transport: Transport.RMQ,
         options: {
-          host: process.env[USER_ENV.HOST] ?? DEFAULT_HOSTS.LOCALHOST,
-          port: parseInt(
-            process.env[USER_ENV.PORT] ?? DEFAULT_PORTS.USER_SERVICE.toString(),
-            10,
-          ),
+          urls: [process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT],
+          queue: RABBITMQ_QUEUES.USER,
+          queueOptions: RABBITMQ_OPTIONS,
         },
       },
     ]),

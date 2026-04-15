@@ -28,7 +28,10 @@ export class UserRepository extends Repository<UserEntity> {
   async getUserById(id: string): Promise<UserEntity | null> {
     return await this.repo.findOne({ where: { id } });
   }
-  async updateUser(id: string, updateData: Partial<UserEntity>): Promise<UserEntity | null> {
+  async updateUser(
+    id: string,
+    updateData: Partial<UserEntity>,
+  ): Promise<UserEntity | null> {
     await this.repo.update(id, updateData);
     return await this.repo.findOne({ where: { id } });
   }

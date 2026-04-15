@@ -7,22 +7,27 @@ import 'tsconfig-paths/register';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { UserModule } from './user.module';
 import { NestFactory } from '@nestjs/core';
-import { USER_ENV, DEFAULT_HOSTS, DEFAULT_PORTS } from '@libs';
+import {
+  RABBITMQ_QUEUES,
+  RABBITMQ_OPTIONS,
+  RABBITMQ_URL_DEFAULT,
+} from '@libs/constants';
 
 async function bootstrap() {
+  const rabbitmqUrl = process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT;
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     UserModule,
     {
-      transport: Transport.TCP,
+      transport: Transport.RMQ,
       options: {
-        host: process.env[USER_ENV.HOST] ?? DEFAULT_HOSTS.LOCALHOST,
-        port: parseInt(
-          process.env[USER_ENV.PORT] ?? DEFAULT_PORTS.USER_SERVICE.toString(),
-          10,
-        ),
+        urls: [rabbitmqUrl],
+        queue: RABBITMQ_QUEUES.USER,
+        queueOptions: RABBITMQ_OPTIONS,
       },
     },
   );
   await app.listen();
+  console.log(`User Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.USER}`);
 }
 bootstrap();

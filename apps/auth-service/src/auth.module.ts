@@ -5,17 +5,16 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import {
-  // AUTH_REPOSITORY_TOKEN,
   AUTH_SERVICE_TOKEN,
-  USER_SERVICE_TOKEN,  
-  USER_ENV,             
-} from '@libs/constants'; 
+  USER_SERVICE_TOKEN,
+  RABBITMQ_QUEUES,
+  RABBITMQ_OPTIONS,
+  RABBITMQ_URL_DEFAULT,
+} from '@libs/constants';
 import { jwtConfig } from './config/jwt.config';
 import configuration from './config/configuration';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { DEFAULT_PORTS } from '@libs/constants/ports';
-import { DEFAULT_HOSTS } from '@libs/constants/hosts';
 
 @Module({
   imports: [
@@ -37,16 +36,14 @@ import { DEFAULT_HOSTS } from '@libs/constants/hosts';
     ClientsModule.register([
       {
         name: USER_SERVICE_TOKEN,
-        transport: Transport.TCP,
+        transport: Transport.RMQ,
         options: {
-          host: process.env[USER_ENV.HOST] ?? DEFAULT_HOSTS.LOCALHOST,
-          port: parseInt(
-            process.env[USER_ENV.PORT] ?? DEFAULT_PORTS.USER_SERVICE.toString(),
-            10,
-          ),
-        }
-      }
-    ])
+          urls: [process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT],
+          queue: RABBITMQ_QUEUES.USER,
+          queueOptions: RABBITMQ_OPTIONS,
+        },
+      },
+    ]),
   ],
   controllers: [AuthController],
   providers: [
