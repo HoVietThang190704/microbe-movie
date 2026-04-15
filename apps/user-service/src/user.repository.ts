@@ -25,8 +25,15 @@ export class UserRepository extends Repository<UserEntity> {
       this.repo.create({ email, passwordHash, username }),
     );
   }
-  async getUserById(id: string): Promise<UserEntity | null> {
-    return await this.repo.findOne({ where: { id } });
+  async getUserById(
+    id: string,
+  ): Promise<Omit<UserEntity, 'passwordHash'> | null> {
+    return await this.repo.findOne({
+      select: { passwordHash: false },
+      where: {
+        id,
+      },
+    });
   }
   async updateUser(
     id: string,

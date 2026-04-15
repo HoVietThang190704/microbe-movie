@@ -35,8 +35,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const { passwordHash, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return user;
   }
 
   async findEmail(email: string) {
