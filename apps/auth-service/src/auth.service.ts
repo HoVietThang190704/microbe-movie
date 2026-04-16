@@ -15,7 +15,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginPayload: LoginDto): Promise<{ accessToken: string, refreshToken: string }> {
+  async login(
+    loginPayload: LoginDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { email, password } = loginPayload;
     try {
       const user = await firstValueFrom<User>(
@@ -32,24 +34,34 @@ export class AuthService {
         throw new Error('Invalid email or password');
       }
 
-      const accessToken = this.jwtService.sign({
-        userId: user.id,
-        email: user.email,
-      }, { expiresIn: '1h' });
+      const accessToken = this.jwtService.sign(
+        {
+          userId: user.id,
+          email: user.email,
+        },
+        { expiresIn: '1h' },
+      );
 
-      const refreshToken = this.jwtService.sign({
-        userId: user.id,
-        email: user.email,
-      }, { expiresIn: '30d' });
+      const refreshToken = this.jwtService.sign(
+        {
+          userId: user.id,
+          email: user.email,
+        },
+        { expiresIn: '30d' },
+      );
 
-      await firstValueFrom (
-        this.userClient.send(USER_MESSAGES.UPDATE_USER, {
-          id: user.id,
-          updateData: {
-            refreshToken,
-            refreshTokenExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-          }
-        }).pipe(first())
+      await firstValueFrom(
+        this.userClient
+          .send(USER_MESSAGES.UPDATE_USER, {
+            id: user.id,
+            updateData: {
+              refreshToken,
+              refreshTokenExpiry: new Date(
+                Date.now() + 30 * 24 * 60 * 60 * 1000,
+              ),
+            },
+          })
+          .pipe(first()),
       );
 
       return { accessToken, refreshToken };
@@ -70,20 +82,27 @@ export class AuthService {
     }
   }
 
-  async refreshToken(refreshTokenPayload: string): Promise<{ accessToken: string }> {
+  async refreshToken(
+    refreshTokenPayload: string,
+  ): Promise<{ accessToken: string }> {
     try {
-      const decoded = this.jwtService.verify<{ userId: string; email: string }> (
-        refreshTokenPayload
+      const decoded = this.jwtService.verify<{ userId: string; email: string }>(
+        refreshTokenPayload,
       );
 
       const user = await firstValueFrom<User>(
-        this.userClient.send(USER_MESSAGES.GET_USER_BY_ID, { id: decoded.userId }).pipe(first()),
+        this.userClient
+          .send(USER_MESSAGES.GET_USER_BY_ID, { id: decoded.userId })
+          .pipe(first()),
       );
 
-      const newAccessToken = this.jwtService.sign({
-        userId: user.id,
-        email: user.email,
-      }, { expiresIn: '1h' });
+      const newAccessToken = this.jwtService.sign(
+        {
+          userId: user.id,
+          email: user.email,
+        },
+        { expiresIn: '1h' },
+      );
 
       return { accessToken: newAccessToken };
     } catch (error) {

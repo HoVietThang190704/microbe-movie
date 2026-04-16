@@ -2,11 +2,12 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 
 dotenv.config({ path: path.join(process.cwd(), '.env') });
+dotenv.config({ path: path.join(process.cwd(), 'apps/videos-service/.env') });
 
 import 'tsconfig-paths/register';
-import { NestFactory } from '@nestjs/core';
-import { VideosModule } from './videos.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { VideosModule } from './videos.module';
+import { NestFactory } from '@nestjs/core';
 import {
   RABBITMQ_QUEUES,
   RABBITMQ_OPTIONS,

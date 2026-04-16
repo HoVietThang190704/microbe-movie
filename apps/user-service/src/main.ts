@@ -1,7 +1,11 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
+// Load from root .env first
 dotenv.config({ path: path.join(process.cwd(), '.env') });
+
+// Then load from service-specific .env (overrides root)
+dotenv.config({ path: path.join(process.cwd(), 'apps/user-service/.env') });
 
 import 'tsconfig-paths/register';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
