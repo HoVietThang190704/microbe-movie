@@ -17,4 +17,8 @@ export class AuthController {
   validateToken(payload: { token: string }) {
     return this.authService.verifyToken(payload.token);
   }
+  @MessagePattern(AUTH_MESSAGES.REFRESH_TOKEN)
+  refreshToken(payload: { refreshToken: string }) {
+    return this.authService.refreshToken(payload.refreshToken);
+  }
 }

@@ -23,6 +23,12 @@ export class UserEntity {
   @Column({ type: 'boolean', default: true })
   isActive!: boolean;
 
+  @Column({ type: 'varchar', default: null })
+  refreshToken!: string | null;
+
+  @Column({ type: 'timestamp', default: null })
+  refreshTokenExpiry!: string | null;
+
   @CreateDateColumn()
   createdAt!: Date;
 

@@ -24,7 +24,7 @@ export class UserController {
   @MessagePattern(USER_MESSAGES.UPDATE_USER)
   updateUser(payload: {
     id: string;
-    updateData: Partial<{ email: string; username: string }>;
+    updateData: Partial<{ email: string; username: string; refreshToken: string; refreshTokenExpiry: Date }>;
   }) {
     return this.userService.updateUser(payload.id, payload.updateData);
   }

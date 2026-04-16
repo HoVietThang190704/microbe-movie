@@ -1,3 +1,5 @@
 import { RegisterDto } from "../auth";
 
-export class CreateUserDto extends RegisterDto {}
+export class CreateUserDto extends RegisterDto {
+  refreshToken?: string;
+}
