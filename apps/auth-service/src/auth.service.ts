@@ -84,12 +84,11 @@ export class AuthService {
       throw new BadRequestException('Email already exists');
     }
 
-    const passwordHash = await bcryptjs.hash(password, this.bcryptRounds);
     const newUser = await this.send<CreateUserRequest, UserResponseDto>(
       USER_MESSAGES.CREATE,
       {
         email,
-        password: passwordHash,
+        password,
         username,
       },
     );
