@@ -1,7 +1,6 @@
 import {
   AUTH_MESSAGES,
   AUTH_SERVICE_TOKEN,
-  USER_MESSAGES,
   USER_SERVICE_TOKEN,
   RegisterDto,
   LoginDto,
@@ -26,9 +25,9 @@ export class AuthService {
   }
   async register(registerPayload: RegisterDto): Promise<object> {
     return this.send<RegisterDto, object>(
-      USER_MESSAGES.REGISTER,
+      AUTH_MESSAGES.REGISTER,
       registerPayload,
-      this.userClient,
+      this.authClient,
     );
   }
   async login(loginPayload: LoginDto): Promise<{ accessToken: string }> {

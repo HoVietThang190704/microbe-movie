@@ -32,6 +32,8 @@ async function bootstrap() {
     },
   );
   await app.listen();
-  console.log(`User Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.USER}`);
+  console.log(
+    `User Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.USER}`,
+  );
 }
 bootstrap();
