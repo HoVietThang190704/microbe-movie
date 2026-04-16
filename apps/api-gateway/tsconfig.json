@@ -1,11 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2023",
     "lib": ["ES2023"],
     "outDir": "./dist",
     "rootDir": "./src",
+    "noEmit": false,
     "baseUrl": "../../",
     "paths": {
       "@libs": ["libs/dist"],

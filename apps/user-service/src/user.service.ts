@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { UserRepository } from './user.repository';
 import { USER_REPOSITORY_TOKEN } from './libs/shared/constant/user';
-import { RegisterDto } from '@libs';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from '@libs';
 
 @Injectable()
 export class UserService {
@@ -12,8 +12,8 @@ export class UserService {
   ) {}
 
   async register(
-    registerPayload: RegisterDto,
-  ): Promise<{ id: string; email: string; username: string }> {
+    registerPayload: CreateUserDto,
+  ): Promise<UserResponseDto> {
     const { email, password, username } = registerPayload;
     const existingUser = await this.userRepository.findEmail(email);
     if (existingUser) {
@@ -27,8 +27,8 @@ export class UserService {
     );
     if (!newUser) {
       throw new Error('Failed to create user');
-    }
-    return { id: newUser.id, email: newUser.email, username: newUser.username };
+    };
+    return newUser;
   }
   async getUserById(id: string) {
     const user = await this.userRepository.getUserById(id);
@@ -43,9 +43,12 @@ export class UserService {
   }
   async updateUser(
     id: string,
-    updateData: Partial<{ email: string; username: string }>,
-  ) {
+    updateData: UpdateUserDto,
+  ): Promise<UserResponseDto> {
     const updated = await this.userRepository.updateUser(id, updateData);
+    if (!updated) {
+      throw new NotFoundException('User not found');
+    }
     return updated;
   }
   async deleteUser(id: string) {
