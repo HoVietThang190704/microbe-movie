@@ -13,6 +13,7 @@ import {
   RABBITMQ_OPTIONS,
   RABBITMQ_URL_DEFAULT,
 } from '@libs/constants';
+import { RpcExceptionFilter } from './rpc-exception.filter';
 
 async function bootstrap() {
   const rabbitmqUrl = process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT;
@@ -28,7 +29,10 @@ async function bootstrap() {
       },
     },
   );
+  app.useGlobalFilters(new RpcExceptionFilter());
   await app.listen();
-  console.log(`Auth Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.AUTH}`);
+  console.log(
+    `Auth Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.AUTH}`,
+  );
 }
 bootstrap();

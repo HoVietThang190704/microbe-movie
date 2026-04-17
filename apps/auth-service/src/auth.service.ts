@@ -12,12 +12,12 @@ import {
   JwtPayload,
   UserUpdateRequestDto,
   UserResponseDto,
+  handleMicroserviceCall,
 } from '@libs';
 import { JwtService } from '@nestjs/jwt';
 
 import { USER_SERVICE_TOKEN, USER_MESSAGES } from '@libs/constants';
 import { ClientProxy } from '@nestjs/microservices/client/client-proxy';
-import { firstValueFrom } from 'rxjs';
 
 interface User {
   id: string;
@@ -84,14 +84,14 @@ export class AuthService {
       throw new BadRequestException('Email already exists');
     }
 
-    const newUser = await this.send<CreateUserRequest, UserResponseDto>(
-      USER_MESSAGES.CREATE,
-      {
-        email,
-        password,
-        username,
-      },
-    );
+    const newUser = await handleMicroserviceCall<
+      CreateUserRequest,
+      UserResponseDto
+    >(this.userClient, USER_MESSAGES.CREATE, {
+      email,
+      password,
+      username,
+    });
 
     if (!newUser) {
       throw new BadRequestException('Failed to create user');
@@ -115,7 +115,8 @@ export class AuthService {
     try {
       const decoded = this.jwtService.verify<JwtPayload>(refreshTokenPayload);
 
-      const user = await this.send<GetUserByIdRequest, User>(
+      const user = await handleMicroserviceCall<GetUserByIdRequest, User>(
+        this.userClient,
         USER_MESSAGES.GET_USER_BY_ID,
         { id: decoded.sub },
       );
@@ -125,8 +126,11 @@ export class AuthService {
       }
 
       return this.generateTokens(user.id, user.email, user.username);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
+    } catch (error: unknown) {
+      throw new UnauthorizedException(
+        'Invalid refresh token',
+        error instanceof Error ? error.message : undefined,
+      );
     }
   }
 
@@ -149,7 +153,8 @@ export class AuthService {
   }
 
   private async findUserByEmail(email: string): Promise<User | null> {
-    return this.send<FindByEmailRequest, User | null>(
+    return handleMicroserviceCall<FindByEmailRequest, User | null>(
+      this.userClient,
       USER_MESSAGES.FIND_EMAIL,
       { email },
     );
@@ -161,25 +166,22 @@ export class AuthService {
   ): Promise<void> {
     const refreshTokenExpiry = this.calculateRefreshTokenExpiry();
 
-    await this.send<UpdateUserRequest, void>(USER_MESSAGES.UPDATE_USER, {
-      id: userId,
-      updateData: {
-        refreshToken,
-        refreshTokenExpiry: refreshTokenExpiry.toISOString(),
+    await handleMicroserviceCall<UpdateUserRequest, void>(
+      this.userClient,
+      USER_MESSAGES.UPDATE_USER,
+      {
+        id: userId,
+        updateData: {
+          refreshToken,
+          refreshTokenExpiry: refreshTokenExpiry.toISOString(),
+        },
       },
-    });
+    );
   }
 
   private calculateRefreshTokenExpiry(): Date {
     return new Date(
       Date.now() + this.refreshTokenExpiryDays * 24 * 60 * 60 * 1000,
     );
-  }
-
-  private async send<TRequest, TResponse>(
-    pattern: string,
-    payload: TRequest,
-  ): Promise<TResponse> {
-    return await firstValueFrom(this.userClient.send(pattern, payload));
   }
 }

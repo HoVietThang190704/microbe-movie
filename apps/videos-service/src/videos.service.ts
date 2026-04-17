@@ -17,11 +17,19 @@ export class VideosService {
   ) {}
 
   async getAllVideos(count: number = 10): Promise<Video[]> {
-    return this.videosRepository.getAllVideos(count);
+    try {
+      return await this.videosRepository.getAllVideos(count);
+    } catch {
+      throw new InternalServerErrorException('Failed to retrieve videos');
+    }
   }
 
   async getVideoById(id: string): Promise<Video | null> {
-    return this.videosRepository.getVideoById(id);
+    try {
+      return await this.videosRepository.getVideoById(id);
+    } catch {
+      throw new InternalServerErrorException('Failed to retrieve video');
+    }
   }
 
   async createVideo(videoData: CreateVideoDto): Promise<Video> {

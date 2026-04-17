@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Video } from './database/entities/video.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { limit, offset } from './libs/shared/constant/videos';
 
 @Injectable()
 export class VideosRepository {

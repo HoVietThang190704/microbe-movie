@@ -8,9 +8,14 @@ import 'tsconfig-paths/register';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { GlobalExceptionFilter } from './filters/global-exception.filter';
+import { ErrorInterceptor } from './intercepter/ErrorInterceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalInterceptors(new ErrorInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({

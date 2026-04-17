@@ -1,35 +1,23 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { VIDEOS_MESSAGES } from '@libs/constants/videos';
 import { CreateVideoDto } from '@libs';
+import { VideosService } from './videos.service';
+import { VIDEOS_SERVICE_TOKEN } from './libs/shared/constant/videos';
 
 @Controller()
 export class VideosController {
+  constructor(
+    @Inject(VIDEOS_SERVICE_TOKEN) private readonly videosService: VideosService,
+  ) {}
+
   @MessagePattern(VIDEOS_MESSAGES.GET_VIDEOS)
-  getVideos() {
-    return {
-      videos: [
-        {
-          id: '1',
-          title: 'The Shawshank Redemption',
-          filename: 'shawshank.mp4',
-          size: 2147483648,
-          uploadedAt: new Date('2024-01-01'),
-        },
-      ],
-      total: 1,
-    };
+  async getVideos() {
+    return await this.videosService.getAllVideos();
   }
 
   @MessagePattern(VIDEOS_MESSAGES.UPLOAD_VIDEO)
-  uploadVideo(payload: CreateVideoDto) {
-    return {
-      id: '2',
-      filename: payload.filename,
-      originalName: payload.originalName,
-      size: payload.size,
-      uploadedAt: new Date(),
-      url: `/videos/${payload.filename}`,
-    };
+  async uploadVideo(payload: CreateVideoDto) {
+    return await this.videosService.createVideo(payload);
   }
 }

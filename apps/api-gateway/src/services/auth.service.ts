@@ -4,10 +4,10 @@ import {
   USER_SERVICE_TOKEN,
   RegisterDto,
   LoginDto,
+  handleMicroserviceCall,
 } from '@libs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -16,25 +16,19 @@ export class AuthService {
     @Inject(USER_SERVICE_TOKEN) private readonly userClient: ClientProxy,
   ) {}
 
-  private async send<TRequest, TResponse>(
-    pattern: string,
-    payload: TRequest,
-    client: ClientProxy,
-  ): Promise<TResponse> {
-    return await firstValueFrom(client.send(pattern, payload));
-  }
   async register(registerPayload: RegisterDto): Promise<object> {
-    return this.send<RegisterDto, object>(
+    return handleMicroserviceCall<RegisterDto, object>(
+      this.authClient,
       AUTH_MESSAGES.REGISTER,
       registerPayload,
-      this.authClient,
     );
   }
+
   async login(loginPayload: LoginDto): Promise<{ accessToken: string }> {
-    return this.send<LoginDto, { accessToken: string }>(
+    return handleMicroserviceCall<LoginDto, { accessToken: string }>(
+      this.authClient,
       AUTH_MESSAGES.LOGIN,
       loginPayload,
-      this.authClient,
     );
   }
 }
