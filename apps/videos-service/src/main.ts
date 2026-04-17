@@ -29,6 +29,8 @@ async function bootstrap() {
     },
   );
   await app.listen();
-  console.log(`Videos Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.VIDEOS}`);
+  console.log(
+    `Videos Service listening on RabbitMQ queue: ${RABBITMQ_QUEUES.VIDEOS}`,
+  );
 }
 bootstrap();
