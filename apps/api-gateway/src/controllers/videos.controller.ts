@@ -12,8 +12,7 @@ export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  async getVideos(@CurrentUser() user: JwtUser): Promise<GetVideosData> {
+  async getVideos(): Promise<GetVideosData> {
     return await this.videosService.getVideos();
   }
 }
