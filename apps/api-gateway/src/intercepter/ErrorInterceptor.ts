@@ -14,6 +14,7 @@ import { Request } from 'express';
 interface MicroserviceError {
   status?: string;
   message?: string;
+  details?: unknown;
 }
 
 @Injectable()
@@ -26,7 +27,13 @@ export class ErrorInterceptor implements NestInterceptor {
         const request = context.switchToHttp().getRequest<Request>();
         const { method, url } = request;
 
-        this.logger.error(`Error on ${method} ${url}:`, error);
+        this.logger.error(`Error on ${method} ${url}:`, {
+          errorType: error?.constructor?.name,
+          message: error instanceof Error ? error.message : String(error),
+          statusCode:
+            error instanceof HttpException ? error.getStatus() : 'N/A',
+          fullError: error,
+        });
 
         if (error instanceof HttpException) {
           return throwError(() => error);

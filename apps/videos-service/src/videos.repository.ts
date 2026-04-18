@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class VideosRepository {
-  constructor(@InjectModel(Video.name) private readonly model: Model<Video>) {}
+  constructor(@InjectModel('Video') private readonly model: Model<Video>) {}
   async getAllVideos(count: number = 10): Promise<Video[]> {
     return this.model.aggregate<Video>([{ $sample: { size: count } }]).exec();
   }

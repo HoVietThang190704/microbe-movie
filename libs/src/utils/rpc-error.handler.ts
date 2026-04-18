@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -9,6 +9,8 @@ interface MicroserviceError {
   message?: string;
   details?: unknown;
 }
+
+const logger = new Logger('handleMicroserviceCall');
 
 export async function handleMicroserviceCall<TRequest, TResponse>(
   client: ClientProxy,
@@ -30,8 +32,23 @@ export async function handleMicroserviceCall<TRequest, TResponse>(
           );
         }
 
+        // Enhanced logging for debugging
+        logger.error(
+          `Microservice error for pattern "${pattern}": missing status or message`,
+          {
+            receivedError: microserviceError,
+            errorType: typeof error,
+            errorKeys: error && typeof error === 'object' ? Object.keys(error as object) : 'N/A',
+            rawError: error instanceof Error ? error.message : String(error),
+          },
+        );
+
         throw new HttpException(
-          { message: 'Service error' },
+          {
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Service error',
+            details: error instanceof Error ? error.message : String(error),
+          },
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }),

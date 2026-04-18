@@ -30,6 +30,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       method: request.method,
       error: error.error,
       stack: error.stack,
+      exceptionType: exception?.constructor?.name,
+      fullException: exception,
     });
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;

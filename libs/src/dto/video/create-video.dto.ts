@@ -10,17 +10,26 @@ export type VideoMimeType = (typeof VideoMimeType)[keyof typeof VideoMimeType];
 
 export class CreateVideoDto {
   @IsString()
+  title!: string;
+
+  @IsString()
   filename!: string;
 
   @IsString()
   originalName!: string;
 
   @IsString()
-  path!: string;
+  description!: string;
+
+  @IsString()
+  userId!: string;
 
   @IsNumber()
   @Min(1)
   size!: number;
+
+  @IsString()
+  path!: string;
 
   @IsEnum(VideoMimeType)
   mimetype!: VideoMimeType;

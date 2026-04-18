@@ -15,7 +15,11 @@ export class RpcExceptionFilter extends BaseRpcExceptionFilter {
   private readonly logger = new Logger(RpcExceptionFilter.name);
 
   catch(exception: unknown): Observable<any> {
-    this.logger.error('Caught exception:', exception);
+    this.logger.error('Caught exception in RPC:', {
+      exceptionType: exception?.constructor?.name,
+      message: exception instanceof Error ? exception.message : String(exception),
+      stack: exception instanceof Error ? exception.stack : undefined,
+    });
 
     if (exception instanceof NotFoundException) {
       return throwError(() => ({
@@ -46,22 +50,27 @@ export class RpcExceptionFilter extends BaseRpcExceptionFilter {
     }
 
     if (exception instanceof InternalServerErrorException) {
+      const errMsg = (exception as Error).message || 'Internal server error';
       return throwError(() => ({
         status: HTTP_STATUS_MAP.InternalServerErrorException,
-        message: (exception as Error).message || 'Internal server error',
+        message: errMsg,
       }));
     }
 
     // Handle RpcException
     if (exception instanceof RpcException) {
-      return throwError(() => exception.getError());
+      const rpcError = exception.getError();
+      this.logger.warn('RpcException error object:', rpcError);
+      return throwError(() => rpcError);
     }
 
-    // Handle unknown errors
+    // Handle unknown errors - ensure both status and message are present
+    const errorMessage = exception instanceof Error ? exception.message : 'Unknown error';
+    this.logger.error('Unhandled exception type:', errorMessage);
     return throwError(() => ({
       status: HTTP_STATUS_MAP.InternalServerErrorException,
       message: 'An unexpected error occurred',
-      details: exception instanceof Error ? exception.message : 'Unknown error',
+      details: errorMessage,
     }));
   }
 }

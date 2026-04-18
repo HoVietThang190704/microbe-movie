@@ -19,24 +19,33 @@ export class VideosService {
   async getAllVideos(count: number = 10): Promise<Video[]> {
     try {
       return await this.videosRepository.getAllVideos(count);
-    } catch {
-      throw new InternalServerErrorException('Failed to retrieve videos');
+    } catch (error) {
+      console.error('Error retrieving videos:', error);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to retrieve videos'
+      );
     }
   }
 
   async getVideoById(id: string): Promise<Video | null> {
     try {
       return await this.videosRepository.getVideoById(id);
-    } catch {
-      throw new InternalServerErrorException('Failed to retrieve video');
+    } catch (error) {
+      console.error('Error retrieving video:', error);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to retrieve video'
+      );
     }
   }
 
   async createVideo(videoData: CreateVideoDto): Promise<Video> {
     try {
       return await this.videosRepository.createVideo(videoData);
-    } catch {
-      throw new InternalServerErrorException('Failed to create video');
+    } catch (error) {
+      console.error('Error creating video:', error);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to create video'
+      );
     }
   }
 
