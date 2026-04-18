@@ -1,4 +1,4 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, Inject, BadRequestException } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { VIDEOS_MESSAGES } from '@libs/constants/videos';
 import { CreateVideoDto } from '@libs';
@@ -18,6 +18,9 @@ export class VideosController {
 
   @MessagePattern(VIDEOS_MESSAGES.UPLOAD_VIDEO)
   async uploadVideo(payload: CreateVideoDto) {
+    if (!payload.userId) {
+      throw new BadRequestException('userId is required for video upload');
+    }
     return await this.videosService.createVideo(payload);
   }
 }

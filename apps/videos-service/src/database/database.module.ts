@@ -1,15 +1,26 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { VideoSchema } from './entities/video.schema';
+import { databaseConfig } from './config/database.config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      process.env.MONGO_URL || 'mongodb://localhost:27017',
-      {
-        dbName: process.env.DB_NAME || 'videos_db',
+    ConfigModule.forFeature(databaseConfig),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const mongoUrl =
+          configService.get<string>('MONGO_URL') || 'mongodb://localhost:27017';
+        const dbName = configService.get<string>('DB_NAME') || 'videos_db';
+
+        return {
+          uri: mongoUrl,
+          dbName: dbName,
+        };
       },
-    ),
+    }),
     MongooseModule.forFeature([{ name: 'Video', schema: VideoSchema }]),
   ],
   exports: [MongooseModule],

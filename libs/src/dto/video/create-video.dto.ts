@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString, Min } from 'class-validator';
+import { IsEnum, IsNumber, IsString, IsNotEmpty, IsOptional, Min } from 'class-validator';
 
 export const VideoMimeType = {
   MP4: 'video/mp4',
@@ -21,9 +21,6 @@ export class CreateVideoDto {
   @IsString()
   description!: string;
 
-  @IsString()
-  userId!: string;
-
   @IsNumber()
   @Min(1)
   size!: number;
@@ -33,4 +30,9 @@ export class CreateVideoDto {
 
   @IsEnum(VideoMimeType)
   mimetype!: VideoMimeType;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  userId?: string;
 }

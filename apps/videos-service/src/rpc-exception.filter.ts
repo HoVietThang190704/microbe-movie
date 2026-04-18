@@ -17,7 +17,8 @@ export class RpcExceptionFilter extends BaseRpcExceptionFilter {
   catch(exception: unknown): Observable<any> {
     this.logger.error('Caught exception in RPC:', {
       exceptionType: exception?.constructor?.name,
-      message: exception instanceof Error ? exception.message : String(exception),
+      message:
+        exception instanceof Error ? exception.message : String(exception),
       stack: exception instanceof Error ? exception.stack : undefined,
     });
 
@@ -65,7 +66,8 @@ export class RpcExceptionFilter extends BaseRpcExceptionFilter {
     }
 
     // Handle unknown errors - ensure both status and message are present
-    const errorMessage = exception instanceof Error ? exception.message : 'Unknown error';
+    const errorMessage =
+      exception instanceof Error ? exception.message : 'Unknown error';
     this.logger.error('Unhandled exception type:', errorMessage);
     return throwError(() => ({
       status: HTTP_STATUS_MAP.InternalServerErrorException,

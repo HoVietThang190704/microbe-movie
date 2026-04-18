@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { VIDEOS_SERVICE_TOKEN, VIDEOS_MESSAGES } from '@libs/constants';
 import type { GetVideosData, VideoUploadData } from '@libs/types';
 import { CreateVideoDto, handleMicroserviceCall } from '@libs';
+import { JwtUser } from '../auth/types/jwt-user.interface';
 
 @Injectable()
 export class VideosService {
@@ -18,11 +19,17 @@ export class VideosService {
     );
   }
 
-  async uploadVideo(payload: CreateVideoDto): Promise<VideoUploadData> {
+  async uploadVideo(
+    payload: CreateVideoDto,
+    user: JwtUser,
+  ): Promise<VideoUploadData> {
     return handleMicroserviceCall<CreateVideoDto, VideoUploadData>(
       this.videosClient,
       VIDEOS_MESSAGES.UPLOAD_VIDEO,
-      payload,
+      {
+        ...payload,
+        userId: user.userId,
+      },
     );
   }
 }

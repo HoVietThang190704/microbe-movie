@@ -27,6 +27,7 @@ services:
       PORT: 8080
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
       REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
       NODE_ENV: production
     ports:
       - '8080:8080'
@@ -87,11 +88,10 @@ services:
     container_name: videos-service
     environment:
       VIDEOS_PORT: 8081
-      DB_HOST: ${DB_HOST:-localhost}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_USERNAME: ${DB_USERNAME:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-password}
-      DB_NAME: ${DB_NAME:-auth_db}
+      MONGO_URL: ${MONGO_URL}
+      DB_NAME: ${videos_db}
+      MONGOUSER: ${MONGO_USER:-admin}
+      MONGOPASSWORD: ${MONGO_PASSWORD:-password}
       REDIS_URL: ${REDIS_URL}
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
       NODE_ENV: production

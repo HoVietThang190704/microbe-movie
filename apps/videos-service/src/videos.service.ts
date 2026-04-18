@@ -22,7 +22,7 @@ export class VideosService {
     } catch (error) {
       console.error('Error retrieving videos:', error);
       throw new InternalServerErrorException(
-        error instanceof Error ? error.message : 'Failed to retrieve videos'
+        error instanceof Error ? error.message : 'Failed to retrieve videos',
       );
     }
   }
@@ -33,7 +33,7 @@ export class VideosService {
     } catch (error) {
       console.error('Error retrieving video:', error);
       throw new InternalServerErrorException(
-        error instanceof Error ? error.message : 'Failed to retrieve video'
+        error instanceof Error ? error.message : 'Failed to retrieve video',
       );
     }
   }
@@ -44,7 +44,7 @@ export class VideosService {
     } catch (error) {
       console.error('Error creating video:', error);
       throw new InternalServerErrorException(
-        error instanceof Error ? error.message : 'Failed to create video'
+        error instanceof Error ? error.message : 'Failed to create video',
       );
     }
   }
@@ -69,20 +69,5 @@ export class VideosService {
       throw new NotFoundException(`Video with id ${id} not found`);
     }
     return updatedVideo;
-  }
-
-  private mapToVideoResponseDto(video: Partial<Video>): Video {
-    return {
-      title: video.title!,
-      filename: video.filename!,
-      originalName: video.originalName!,
-      size: video.size!,
-      uploadedBy: video.uploadedBy || 'Unknown',
-      userId: video.userId!,
-      description: video.description || '',
-      isActive: video.isActive ?? true,
-      createdAt: video.createdAt || new Date(),
-      updatedAt: video.updatedAt || new Date(),
-    };
   }
 }
