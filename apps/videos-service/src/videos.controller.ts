@@ -16,8 +16,8 @@ export class VideosController {
     return await this.videosService.getAllVideos();
   }
 
-  @MessagePattern(VIDEOS_MESSAGES.UPLOAD_VIDEO)
-  async uploadVideo(payload: CreateVideoDto) {
+  @MessagePattern(VIDEOS_MESSAGES.CREATE_VIDEO)
+  async createVideo(payload: CreateVideoDto) {
     if (!payload.userId) {
       throw new BadRequestException('userId is required for video upload');
     }

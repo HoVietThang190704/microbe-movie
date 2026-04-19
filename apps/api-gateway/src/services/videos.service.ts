@@ -25,7 +25,7 @@ export class VideosService {
   ): Promise<VideoUploadData> {
     return handleMicroserviceCall<CreateVideoDto, VideoUploadData>(
       this.videosClient,
-      VIDEOS_MESSAGES.UPLOAD_VIDEO,
+      VIDEOS_MESSAGES.CREATE_VIDEO,
       {
         ...payload,
         userId: user.userId,
