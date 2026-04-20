@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Video } from './database/entities/video.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { Video } from '../database/entities/video.schema';
+import { VIDEO_MODEL_TOKEN } from '../libs/shared/constant/videos';
 
 @Injectable()
 export class VideosRepository {
-  constructor(@InjectModel('Video') private readonly model: Model<Video>) {}
+  constructor(
+    @InjectModel(VIDEO_MODEL_TOKEN) private readonly model: Model<Video>,
+  ) {}
   async getAllVideos(count: number = 10): Promise<Video[]> {
     return this.model.aggregate<Video>([{ $sample: { size: count } }]).exec();
   }

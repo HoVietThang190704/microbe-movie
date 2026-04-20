@@ -1,4 +1,8 @@
 export const VIDEOS_SERVICE_TOKEN = 'VIDEOS_SERVICE';
+export const UPLOAD_SERVICE_TOKEN = 'UPLOAD_SERVICE';
 export const VIDEOS_REPOSITORY_TOKEN = 'VIDEOS_REPOSITORY';
+export const UPLOAD_REPOSITORY_TOKEN = 'UPLOAD_REPOSITORY';
+export const S3_SERVICE_TOKEN = 'S3_SERVICE';
+export const VIDEO_MODEL_TOKEN = 'VIDEO_MODEL';
 export const limit = 10;
 export const offset = 0;

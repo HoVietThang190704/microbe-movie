@@ -1,4 +1,11 @@
-import { IsEnum, IsNumber, IsString, IsNotEmpty, IsOptional, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  Min,
+} from 'class-validator';
 
 export const VideoMimeType = {
   MP4: 'video/mp4',

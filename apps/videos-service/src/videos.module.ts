@@ -1,20 +1,27 @@
 import { Module } from '@nestjs/common';
 import { VideosController } from './videos.controller';
 import {
+  S3_SERVICE_TOKEN,
+  UPLOAD_REPOSITORY_TOKEN,
+  UPLOAD_SERVICE_TOKEN,
   VIDEOS_REPOSITORY_TOKEN,
   VIDEOS_SERVICE_TOKEN,
 } from './libs/shared/constant/videos';
-import { VideosService } from './videos.service';
-import { VideosRepository } from './videos.repository';
 import { DatabaseModule } from './database/database.module';
 import { databaseConfig } from './database/config/database.config';
 import { ConfigModule } from '@nestjs/config';
+import { VideosService } from './services/videos.service';
+import { VideosRepository } from './respository/videos.repository';
+import { S3Service } from './services/s3.service';
+import { UploadService } from './services/upload.service';
+import { UploadRepository } from './respository/upload.repository';
+import s3Config from './config/s3.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig],
+      load: [databaseConfig, s3Config],
       envFilePath: '.env',
     }),
     DatabaseModule,
@@ -28,6 +35,18 @@ import { ConfigModule } from '@nestjs/config';
     {
       provide: VIDEOS_REPOSITORY_TOKEN,
       useClass: VideosRepository,
+    },
+    {
+      provide: S3_SERVICE_TOKEN,
+      useClass: S3Service,
+    },
+    {
+      provide: UPLOAD_SERVICE_TOKEN,
+      useClass: UploadService,
+    },
+    {
+      provide: UPLOAD_REPOSITORY_TOKEN,
+      useClass: UploadRepository,
     },
   ],
 })

@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { VideoSchema } from './entities/video.schema';
 import { databaseConfig } from './config/database.config';
+import { VIDEO_MODEL_TOKEN } from '../libs/shared/constant/videos';
 
 @Module({
   imports: [
@@ -21,7 +22,9 @@ import { databaseConfig } from './config/database.config';
         };
       },
     }),
-    MongooseModule.forFeature([{ name: 'Video', schema: VideoSchema }]),
+    MongooseModule.forFeature([
+      { name: VIDEO_MODEL_TOKEN, schema: VideoSchema },
+    ]),
   ],
   exports: [MongooseModule],
 })

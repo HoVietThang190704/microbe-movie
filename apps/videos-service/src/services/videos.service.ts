@@ -5,9 +5,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateVideoDto } from '@libs';
-import { VideosRepository } from './videos.repository';
-import { VIDEOS_REPOSITORY_TOKEN } from './libs/shared/constant/videos';
-import { Video } from './database/entities/video.schema';
+import { VIDEOS_REPOSITORY_TOKEN } from '../libs/shared/constant/videos';
+import { Video } from '../database/entities/video.schema';
+import { VideosRepository } from '../respository/videos.repository';
 
 @Injectable()
 export class VideosService {
