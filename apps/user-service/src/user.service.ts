@@ -65,6 +65,20 @@ export class UserService {
     return this.mapToUserResponseDto(user);
   }
 
+  async getUsersByIds(ids: string[]): Promise<UserResponseDto[]> {
+    try {
+      if (!ids || ids.length === 0) {
+        return [];
+      }
+
+      const users = await this.userRepository.getUsersByIds(ids);
+      return users.map((user) => this.mapToUserResponseDto(user));
+    } catch (error) {
+      console.error('Failed to fetch users by IDs:', error);
+      throw new InternalServerErrorException('Failed to fetch users by IDs');
+    }
+  }
+
   async findEmail(email: string): Promise<UserEntity | null> {
     return await this.userRepository.findEmail(email);
   }

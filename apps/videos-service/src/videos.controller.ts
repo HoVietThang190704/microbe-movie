@@ -2,7 +2,6 @@ import { Controller, Inject, BadRequestException } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { VIDEOS_MESSAGES } from '@libs/constants/videos';
 import {
-  CreateVideoDto,
   InitiateUploadDto,
   GetPartPresignedUrlDto,
   CompleteUploadDto,
@@ -30,11 +29,6 @@ export class VideosController {
   @MessagePattern(VIDEOS_MESSAGES.GET_VIDEOS)
   async getVideos() {
     return await this.videosService.getAllVideos();
-  }
-
-  @MessagePattern(VIDEOS_MESSAGES.CREATE_VIDEO)
-  async createVideo(@Payload() payload: CreateVideoDto) {
-    return await this.videosService.createVideo(payload);
   }
 
   @MessagePattern(VIDEOS_MESSAGES.INITIATE_UPLOAD)

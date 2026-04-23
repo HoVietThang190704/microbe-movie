@@ -14,7 +14,6 @@ import { ResponseInterceptor } from '../intercepter/ResponseIntercepter';
 import { JwtAuthGuard } from '../auth/guards/auth.guard';
 import type { GetVideosData } from '@libs/types';
 import {
-  CreateVideoDto,
   PublishVideoDto,
   InitiateUploadResponseDto,
   PartPresignedUrlResponseDto,
@@ -36,15 +35,6 @@ export class VideosController {
   @Get()
   async getVideos(): Promise<GetVideosData> {
     return await this.videosService.getVideos();
-  }
-
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  async createVideo(
-    @Body() videoPayload: CreateVideoDto,
-    @CurrentUser() user: JwtUser,
-  ) {
-    return await this.videosService.createVideo(videoPayload, user);
   }
 
   @Post('initiate-upload')

@@ -7,6 +7,7 @@ export const USER_MESSAGES = {
   GET_USER_BY_ID: 'user_get_by_id',
   UPDATE_USER: 'user_update',
   DELETE_USER: 'user_delete',
+  GET_USERS_BY_IDS: 'user_get_by_ids',
 } as const;
 
 export const USER_ENV = {

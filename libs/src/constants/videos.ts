@@ -2,7 +2,6 @@ export const VIDEOS_SERVICE_TOKEN = 'VIDEOS_SERVICE';
 
 export const VIDEOS_MESSAGES = {
   GET_VIDEOS: 'get_videos',
-  CREATE_VIDEO: 'create_video',
   INITIATE_UPLOAD: 'initiate_upload',
   GET_PART_PRESIGNED_URL: 'get_part_presigned_url',
   COMPLETE_UPLOAD: 'complete_upload',

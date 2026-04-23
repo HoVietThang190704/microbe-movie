@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { VideosController } from './videos.controller';
 import {
   S3_SERVICE_TOKEN,
@@ -16,6 +17,11 @@ import { S3Service } from './services/s3.service';
 import { UploadService } from './services/upload.service';
 import { UploadRepository } from './respository/upload.repository';
 import s3Config from './config/s3.config';
+import {
+  RABBITMQ_QUEUES,
+  RABBITMQ_URL_DEFAULT,
+  RABBITMQ_OPTIONS,
+} from '@libs/constants';
 
 @Module({
   imports: [
@@ -25,6 +31,17 @@ import s3Config from './config/s3.config';
       envFilePath: '.env',
     }),
     DatabaseModule,
+    ClientsModule.register([
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL || RABBITMQ_URL_DEFAULT],
+          queue: RABBITMQ_QUEUES.USER,
+          queueOptions: RABBITMQ_OPTIONS,
+        },
+      },
+    ]),
   ],
   controllers: [VideosController],
   providers: [

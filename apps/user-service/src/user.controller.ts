@@ -14,6 +14,10 @@ interface GetUserByIdPayload {
   id: string;
 }
 
+interface GetUsersByIdsPayload {
+  ids: string[];
+}
+
 interface FindEmailPayload {
   email: string;
 }
@@ -53,6 +57,13 @@ export class UserController {
     @Payload() payload: GetUserByIdPayload,
   ): Promise<UserResponseDto> {
     return this.userService.getUserById(payload.id);
+  }
+
+  @MessagePattern(USER_MESSAGES.GET_USERS_BY_IDS)
+  async getUsersByIds(
+    @Payload() payload: GetUsersByIdsPayload,
+  ): Promise<UserResponseDto[]> {
+    return this.userService.getUsersByIds(payload.ids);
   }
 
   @MessagePattern(USER_MESSAGES.UPDATE_USER)

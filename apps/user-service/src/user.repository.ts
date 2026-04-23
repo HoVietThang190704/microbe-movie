@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { UserEntity } from './database/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -32,6 +32,16 @@ export class UserRepository extends Repository<UserEntity> {
       select: { passwordHash: false },
       where: {
         id,
+      },
+    });
+  }
+  async getUsersByIds(
+    ids: string[],
+  ): Promise<Omit<UserEntity, 'passwordHash'>[]> {
+    return await this.repo.find({
+      select: { passwordHash: false },
+      where: {
+        id: In(ids),
       },
     });
   }

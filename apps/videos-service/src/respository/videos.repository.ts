@@ -17,11 +17,6 @@ export class VideosRepository {
     return this.model.findById(id).exec();
   }
 
-  async createVideo(videoData: Partial<Video>): Promise<Video> {
-    const createdVideo = new this.model(videoData);
-    return createdVideo.save();
-  }
-
   async deleteVideo(id: string): Promise<Video | null> {
     return this.model.findByIdAndDelete(id).exec();
   }

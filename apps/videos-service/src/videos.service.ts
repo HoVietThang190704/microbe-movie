@@ -5,54 +5,51 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  GetVideosResponseDto,
-  USER_MESSAGES,
-  USER_SERVICE_TOKEN,
-  UserResponseDto,
-} from '@libs';
-import { VIDEOS_REPOSITORY_TOKEN } from '../libs/shared/constant/videos';
-import { Video } from '../database/entities/video.schema';
-import { VideosRepository } from '../respository/videos.repository';
-import { firstValueFrom } from 'rxjs';
+import { GetVideosResponseDto, USER_MESSAGES } from '@libs';
+import { VideosRepository } from './respository/videos.repository';
+import { VIDEOS_REPOSITORY_TOKEN } from './libs/shared/constant/videos';
+import { Video } from './database/entities/video.schema';
 
 @Injectable()
 export class VideosService {
   constructor(
     @Inject(VIDEOS_REPOSITORY_TOKEN)
     private readonly videosRepository: VideosRepository,
-    @Inject(USER_SERVICE_TOKEN) private readonly userClient: ClientProxy,
+    @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
   ) {}
 
   async getAllVideos(count: number = 10): Promise<GetVideosResponseDto[]> {
     try {
       const videos = await this.videosRepository.getAllVideos(count);
-      const uniqueUserIds = [...new Set(videos.map((video) => video.userId))];
-      const usersMap = new Map<string, UserResponseDto>();
-      try {
-        const users = await firstValueFrom(
-          this.userClient.send<UserResponseDto[]>(
-            USER_MESSAGES.GET_USERS_BY_IDS,
-            { ids: uniqueUserIds },
-          ),
-        );
-        if (Array.isArray(users)) {
-          users.forEach((user: UserResponseDto) => {
-            usersMap.set(user.id, user);
-          });
-        }
-      } catch (error) {
-        console.error('Failed to fetch user info in batch:', error);
-      }
-      const videosWithUserInfo = videos.map((video: Video) => ({
-        ...video,
-        _id: video._id?.toString?.() || video._id,
-        userInfo: usersMap.has(video.userId)
-          ? {
-              username: usersMap.get(video.userId)?.username,
-            }
-          : undefined,
-      }));
+      const videosWithUserInfo = await Promise.all(
+        videos.map(async (video: Video) => {
+          try {
+            const userInfo = await this.userClient
+              .send(USER_MESSAGES.GET_USER_BY_ID, { id: video.userId })
+              .toPromise();
+
+            return {
+              ...video,
+              _id: video._id?.toString?.() || video._id,
+              userInfo: userInfo
+                ? {
+                    username: userInfo.username,
+                  }
+                : undefined,
+            };
+          } catch (error) {
+            console.error(
+              `Failed to fetch user info for userId ${video.userId}:`,
+              error,
+            );
+            return {
+              ...video,
+              _id: video._id?.toString?.() || video._id,
+              userInfo: undefined,
+            };
+          }
+        }),
+      );
 
       return videosWithUserInfo as GetVideosResponseDto[];
     } catch (error) {
@@ -71,11 +68,9 @@ export class VideosService {
       }
 
       try {
-        const userInfo = await firstValueFrom(
-          this.userClient.send<UserResponseDto>(USER_MESSAGES.GET_USER_BY_ID, {
-            id: video.userId,
-          }),
-        );
+        const userInfo = await this.userClient
+          .send(USER_MESSAGES.GET_USER_BY_ID, { id: video.userId })
+          .toPromise();
 
         return {
           ...video,
